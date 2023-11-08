@@ -1,5 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+
+//comment
+//cbfekhebk
+=======
 //test number 2
 
 export default function App() {
