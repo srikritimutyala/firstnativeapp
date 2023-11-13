@@ -2,6 +2,9 @@
   "expo": {
     "name": "firstnativeapp",
     "slug": "firstnativeapp",
+    "plugins": [
+      "@react-native-google-signin/google-signin"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,16 +18,24 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.srikriti.firstnativeapp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.srikriti.firstnativeapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "47405c02-e912-4d33-bb28-a53873e96a0d"
+      }
+    },
+    "scheme": "firstnativeapp"
   }
 }
