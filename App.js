@@ -1,6 +1,12 @@
+
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TextInput, Button, FlatList, TouchableOpacity } from 'react-native';
 import axios from 'axios';
+
+//comment
+//cbfekhebk
+
+//test number 2
 
 
 export default function App() {
@@ -42,6 +48,7 @@ export default function App() {
 
 
   return (
+
       <View style={{ flex: 1, padding: 16 }}>
         <Text style={{ fontSize: 20, marginBottom: 16 }}>Find Events in Your Area</Text>
         <TextInput
@@ -81,5 +88,6 @@ export default function App() {
             </View>
         )}
       </View>
+
   );
 }
