@@ -1,20 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import 'expo-dev-client';
 import SignInScreen from './SiginInScreen';
-//comment
-//cbfekhebk
-//982631072066-vbi3m08eksspjb2le2edpc1lr6k2u9nd.apps.googleusercontent.com    web
-//982631072066-v4h7781kb6dlrhmd89i1hrb5f0utf4ka.apps.googleusercontent.com   ios
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, Button, FlatList, TouchableOpacity } from 'react-native';
+import {View, Text, TextInput, Button, FlatList, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 
-//comment
-//cbfekhebk
-
-//test number 2
-
-=======
 
 export default function App() {
   const [location, setLocation] = useState('');
@@ -37,8 +27,6 @@ export default function App() {
     };
 
 
-
-
     try {
       const response = await axios.request(options);
       setEvents(response.data.data);
@@ -55,26 +43,16 @@ export default function App() {
 
 
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <Text>text from srikritiititiitititii</Text>
-      <SignInScreen/>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center' ,
-    justifyContent: 'center',
-  },
-});
-=======
-
       <View style={{ flex: 1, padding: 16 }}>
+        <Text>Open up App.js to start working on your app!</Text>
+        <Text>text from srikritiititiitititii</Text>
+
+          //This code right here is causing errors
+        {/*<SignInScreen/>*/}
+        <StatusBar style="auto" />
+
+
+
         <Text style={{ fontSize: 20, marginBottom: 16 }}>Find Events in Your Area</Text>
         <TextInput
             style={{ height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 16 }}
@@ -83,6 +61,7 @@ const styles = StyleSheet.create({
             onChangeText={(text) => setLocation(text)}
         />
         <Button title="Search Events" onPress={fetchEventsByLocation} />
+
 
 
         {events.length > 0 && !selectedEvent && (
@@ -103,6 +82,7 @@ const styles = StyleSheet.create({
         )}
 
 
+
         {selectedEvent && (
             <View style={{ marginTop: 16 }}>
               <Text style={{ fontSize: 18 }}>Event Details</Text>
@@ -112,7 +92,12 @@ const styles = StyleSheet.create({
               <Button title="Back to Events" onPress={() => setSelectedEvent(null)} />
             </View>
         )}
+
+
+
+
       </View>
+
 
   );
 }
