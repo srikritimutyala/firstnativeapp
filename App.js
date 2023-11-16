@@ -6,6 +6,8 @@ import axios from 'axios';
 import { db } from './firebase.js';
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
+//hello
+
 const App = () => {
   const [location, setLocation] = useState('');
   const [events, setEvents] = useState([]);
