@@ -13,6 +13,7 @@ const App = () => {
   const [selectedDay, setSelectedDay] = useState(null);
 
   const fetchEventsByLocation = async () => {
+      //This is a test commit
     const options = {
       method: 'GET',
       url: 'https://real-time-events-search.p.rapidapi.com/search-events',
