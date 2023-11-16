@@ -24,8 +24,8 @@ const App = () => {
         start: '0',
       },
       headers: {
-        'X-RapidAPI-Key': 'e2df6e46e9msh447cbb3b80c21d8p1120afjsn5b48a6dda562',
-        'X-RapidAPI-Host': 'real-time-events-search.p.rapidapi.com',
+        'X-RapidAPI-Key': '1b2e449e86msh2692ba531c172c6p1ef238jsne3e2ebd3f018',
+        'X-RapidAPI-Host': 'real-time-events-search.p.rapidapi.com'
       },
     };
 
