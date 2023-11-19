@@ -5,8 +5,11 @@ import { View, Text, TextInput, Button, FlatList, TouchableOpacity, StyleSheet }
 import axios from 'axios';
 import { db } from './firebase.js';
 import { doc, setDoc, getDoc } from "firebase/firestore";
+import { NavigationContainer } from '@react-navigation/native';
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
 
-//hello
+
+const days = ['Day 1', 'Day 2', 'Day 3'];
 
 const App = () => {
   const [location, setLocation] = useState('');
@@ -30,7 +33,7 @@ const App = () => {
         start: '0',
       },
       headers: {
-        'X-RapidAPI-Key': '1b2e449e86msh2692ba531c172c6p1ef238jsne3e2ebd3f018',
+        'X-RapidAPI-Key': 'b5607adbf6msh4ec829d9f6aa0dbp131e0bjsn227e0b623fcd',
         'X-RapidAPI-Host': 'real-time-events-search.p.rapidapi.com'
       },
     };
@@ -47,11 +50,11 @@ const App = () => {
       method: 'GET',
       url: `https://restaurants-near-me-usa.p.rapidapi.com/restaurants/location/state/${stateAPI}/city/${location}/0`,
       headers: {
-        'X-RapidAPI-Key': '4c94e54b36msh2e46fe55239a053p1b3468jsn7657bf0a0982',
+        'X-RapidAPI-Key': 'e2df6e46e9msh447cbb3b80c21d8p1120afjsn5b48a6dda562',
         'X-RapidAPI-Host': 'restaurants-near-me-usa.p.rapidapi.com'
       }
     };
-    
+
     try {
       const response2 = await axios.request(options2);
       console.log(response2.data);
@@ -70,10 +73,6 @@ const App = () => {
     }
 
     console.log("ginished the fetchingk")
-
-
-
-
 
   };
 
@@ -111,7 +110,7 @@ const App = () => {
         await setDoc(eventRef, { events: [selectedEvent] });
       }
 
-     
+
 
       setSelectedEvent(null);
 
@@ -157,138 +156,152 @@ const App = () => {
     }
   }
 
-  const days = ['Day 1', 'Day 2', 'Day 3'];
+  function HomeScreen({ navigation }) {
+    return (
+        <View style={styles.container}>
+          <View style={styles.dayButtons}>
+            {days.map((day, index) => (
+                <TouchableOpacity key={index} onPress={() => handleDayClick(day)}>
+                  <View style={styles.dayButton}>
+                    <Text>{day}</Text>
+                  </View>
+                </TouchableOpacity>
+            ))}
+          </View>
+
+          {selectedDay && <Text style={styles.selectedDay}>{`Selected Day: ${selectedDay}`}</Text>}
+
+          <Text style={styles.heading}>Find Events in Your Area</Text>
+          <TextInput
+              style={styles.input}
+              placeholder="Enter City"
+              value={location}
+              autoFocus={true}
+              onChangeText={(text) => setLocation(text)}
+          />
+          <TextInput
+              style={styles.input}
+              placeholder="Enter State"
+              value={stateAPI}
+              onChangeText={(text) => setStateAPI(text)}
+          />
+          <Button title="Search Events" onPress={() => { fetchEventsByLocation(); navigation.navigate('eventsScreen'); }} />
+        </View>
+    );
+  }
+
+  function eventsScreen({ navigation }) {
+    return (
+        <View style={styles.container}>
+          {events.length > 0 && selectedEvent==null && !eaterieDisp &&(
+              <View>
+                <Text style={{ fontSize: 18, marginTop: 16 }}>Event Options in {location}</Text>
+                <FlatList
+                    data={events}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity onPress={() => handleEventClick(item)}>
+                          <View style={{ marginBottom: 8 }}>
+                            <Text>{item.name}</Text>
+                          </View>
+                        </TouchableOpacity>
+                    )}
+
+                />
+
+              </View>
+          )}
+          {restaurantNames.length > 0 && selectedEaterie==null&&  !eventDisp &&(
+              <View>
+                <Text style={{ fontSize: 18, marginTop: 16 }}>Event Options in {location}</Text>
+                <FlatList
+                    data={restaurantNames}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity onPress={() => handleEaterieClick(item)}>
+                          <View style={{ marginBottom: 8 }}>
+                            <Text>{item.restaurantName}</Text>
+                          </View>
+                        </TouchableOpacity>
+                    )}
+
+                />
+
+
+
+              </View>
+          )}
+
+          {selectedEvent && (
+              <View style={styles.eventDetails}>
+                <Text style={styles.eventDetailsHeading}>Event Details</Text>
+                <Text>{selectedEvent.name}</Text>
+                <Text>{selectedEvent.description}</Text>
+                <Text>{selectedEvent.start_time}</Text>
+                <Button
+                    title="Save Event"
+                    onPress={() => {
+                      setEventDisp(false);
+                      handleSaveEvent();
+                    }}
+                />
+
+                <Button title="Back to Events"   onPress={() => {
+                  selectedEvent(null);
+                  setEventDisp(false);
+                }} />
+              </View>
+          )}
+
+          {selectedEaterie && (
+
+              <View style={styles.eventDetails}>
+                <Text style={styles.eventDetailsHeading}>Eaterie Details</Text>
+                <Text>{selectedEaterie.restaurantName}</Text>
+                <Text>Address: {selectedEaterie.address}</Text>
+                <Text>Phone number: {selectedEaterie.phone}</Text>
+                <Text>Website: {selectedEaterie.website}</Text>
+                <Text>Hours: {selectedEaterie.hoursInterval}</Text>
+                <Text>Cuisine: {selectedEaterie.cuisineType}</Text>
+
+
+
+
+
+
+                <Button
+                    title="Save Event"
+                    onPress={() => {
+                      setEaterieDisp(false);
+                      handleEaterieEvent();
+                    }}
+                />
+
+                <Button
+                    title="Back to Events"   onPress={() => {
+                  setSelectedEaterie(null);
+                  setEaterieDisp(false);
+                }} />
+              </View>
+
+          )
+
+          }
+
+          <Button title="Go back" onPress={() => navigation.goBack()} />
+        </View>
+    );
+  }
+
+  const Stack = createNativeStackNavigator();
 
   return (
-      <View style={styles.container}>
-        <StatusBar style="auto" />
-
-        <View style={styles.dayButtons}>
-          {days.map((day, index) => (
-              <TouchableOpacity key={index} onPress={() => handleDayClick(day)}>
-                <View style={styles.dayButton}>
-                  <Text>{day}</Text>
-                </View>
-              </TouchableOpacity>
-          ))}
-        </View>
-
-        {selectedDay && <Text style={styles.selectedDay}>{`Selected Day: ${selectedDay}`}</Text>}
-
-        <Text style={styles.heading}>Find Events in Your Area</Text>
-        <TextInput
-            style={styles.input}
-            placeholder="Enter City"
-            value={location}
-            onChangeText={(text) => setLocation(text)}
-        />
-         <TextInput
-            style={styles.input}
-            placeholder="Enter State"
-            value={stateAPI}
-            onChangeText={(text) => setStateAPI(text)}
-           
-        />
-        <Button title="Search Events" onPress={fetchEventsByLocation} />
-
-        {events.length > 0 && selectedEvent==null && !eaterieDisp &&(
-            <View>
-              <Text style={{ fontSize: 18, marginTop: 16 }}>Event Options in {location}</Text>
-              <FlatList
-                  data={events}
-                  keyExtractor={(item) => item.id}
-                  renderItem={({ item }) => (
-                      <TouchableOpacity onPress={() => handleEventClick(item)}>
-                        <View style={{ marginBottom: 8 }}>
-                          <Text>{item.name}</Text>
-                        </View>
-                      </TouchableOpacity>
-                  )}
-        
-              />
-           
-            </View>
-        )}
-        {restaurantNames.length > 0 && selectedEaterie==null&&  !eventDisp &&(
-            <View>
-              <Text style={{ fontSize: 18, marginTop: 16 }}>Event Options in {location}</Text>
-              <FlatList
-                  data={restaurantNames}
-                  keyExtractor={(item) => item.id}
-                  renderItem={({ item }) => (
-                      <TouchableOpacity onPress={() => handleEaterieClick(item)}>
-                        <View style={{ marginBottom: 8 }}>
-                          <Text>{item.restaurantName}</Text>
-                        </View>
-                      </TouchableOpacity>
-                  )}
-        
-              />
-           
-
-              
-            </View>
-        )}
-
-
-        {selectedEvent && (
-            <View style={styles.eventDetails}>
-              <Text style={styles.eventDetailsHeading}>Event Details</Text>
-              <Text>{selectedEvent.name}</Text>
-              <Text>{selectedEvent.description}</Text>
-              <Text>{selectedEvent.start_time}</Text>
-              <Button
-  title="Save Event"
-  onPress={() => {
-    setEventDisp(false);
-    handleSaveEvent();
-  }}
-/>
-
-             <Button title="Back to Events"   onPress={() => {
-    selectedEvent(null);
-    setEventDisp(false);
-  }} />
-            </View>
-        )}
-
-        {selectedEaterie && (
-            
-            <View style={styles.eventDetails}>
-              <Text style={styles.eventDetailsHeading}>Eaterie Details</Text>
-              <Text>{selectedEaterie.restaurantName}</Text>
-              <Text>Address: {selectedEaterie.address}</Text>
-              <Text>Phone number: {selectedEaterie.phone}</Text>
-              <Text>Website: {selectedEaterie.website}</Text>
-              <Text>Hours: {selectedEaterie.hoursInterval}</Text>
-              <Text>Cuisine: {selectedEaterie.cuisineType}</Text>
-              
-
-
-
-
-             
-              <Button
-  title="Save Event"
-  onPress={() => {
-    setEaterieDisp(false);
-    handleEaterieEvent();
-  }}
-/>
-
-             <Button title="Back to Events"   onPress={() => {
-    setSelectedEaterie(null);
-    setEaterieDisp(false);
-  }} />
-            </View>
-            
-        )
-        
-        
-        }
-
-
-      </View>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="eventsScreen" component={eventsScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
   );
 };
 
