@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import 'expo-dev-client';
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { View, Text, TextInput, Button, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import axios from 'axios';
 import { db } from './firebase.js';
@@ -186,6 +186,18 @@ const App = () => {
               onChangeText={(text) => setStateAPI(text)}
           />
           <Button title="Search Events" onPress={() => { fetchEventsByLocation(); navigation.navigate('eventsScreen'); }} />
+
+          <Button
+              title="View Saved Events"
+              onPress={() => {
+                if (selectedDay) {
+                  navigation.navigate('SavedEventsScreen');
+                } else {
+                  console.log("no day selected")
+                }
+              }}
+          />
+
         </View>
     );
   }
@@ -293,6 +305,48 @@ const App = () => {
     );
   }
 
+  function SavedEventsScreen({ navigation }) {
+    const [savedEvents, setSavedEvents] = useState([]);
+
+    const fetchSavedEvents = async () => {
+      if (selectedDay) {
+        const eventRef = doc(db, 'events', selectedDay);
+        const eventDoc = await getDoc(eventRef);
+
+        if (eventDoc.exists()) {
+          setSavedEvents(eventDoc.data().events);
+          console.log(eventDoc.data().events)
+        } else {
+          setSavedEvents([]);
+        }
+      }
+    };
+
+    useEffect(() => {
+      fetchSavedEvents();
+    }, [selectedDay]);
+
+
+    return (
+        <View style={styles.container}>
+          <Text style={styles.heading}>Saved Events for {selectedDay}</Text>
+          {savedEvents.length > 0 &&(
+              <FlatList
+                  data={savedEvents}
+                  keyExtractor={(item) => item.id}
+                  renderItem={({ item }) => (
+                      <View style={{ marginBottom: 8 }}>
+                        <Text>{item.name}</Text>
+                      </View>
+                  )}
+              />
+          )}
+          <Button title="Go back" onPress={() => navigation.goBack()} />
+        </View>
+    );
+  }
+
+
   const Stack = createNativeStackNavigator();
 
   return (
@@ -300,6 +354,7 @@ const App = () => {
         <Stack.Navigator>
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="eventsScreen" component={eventsScreen} />
+          <Stack.Screen name="SavedEventsScreen" component={SavedEventsScreen} />
         </Stack.Navigator>
       </NavigationContainer>
   );
