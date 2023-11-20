@@ -193,8 +193,7 @@ const App = () => {
                 if (selectedDay) {
                   navigation.navigate('SavedEventsScreen');
                 } else {
-                  // Handle the case where no day is selected
-                  alert('Please select a day first.');
+                  console.log("no day selected")
                 }
               }}
           />
